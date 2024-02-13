@@ -1,0 +1,19 @@
+{
+	"folders": [
+		{
+			"name": "3658BaseTalonFXSwerve",
+			"path": "../3658BaseTalonFXSwerve/3658BaseTalonFXSwerve"
+		},
+		{
+			"path": "."
+		},
+		{
+			"name": "CA24_RI3D_RobotCode",
+			"path": "../CranberryAlarmCode/CA24_RI3D_RobotCode"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "automatic",
+		"java.server.launchMode": "Standard"
+	}
+}
