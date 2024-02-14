@@ -45,7 +45,7 @@ double mRightShooterEncoder = 0;
     slot0.kD = Constants.kShooterD;
     slot0.kV = Constants.kShooterFF;
     //mLeftShooterPID.setOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput)//TODO Find outputrange equivelent for CTRE
-    //mLeftShooterPID.configClosedLoopOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput);
+    //mLeftShooterPID.configClosedLoopOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput);//possible fix to above issue
     mLeftShooterMotor.getConfigurator ().apply(slot0);
     mRightShooterMotor.getConfigurator ().apply(slot0);
     
