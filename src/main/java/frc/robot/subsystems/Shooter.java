@@ -1,10 +1,9 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkBase.ControlType;
-import com.revrobotics.CANSparkFlex;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkPIDController;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.Constants;
@@ -22,46 +21,38 @@ public class Shooter extends Subsystem {
     return mInstance;
   }
 
-  private CANSparkFlex mLeftShooterMotor;
-  private CANSparkFlex mRightShooterMotor;
+  private TalonFX mLeftShooterMotor;
+  private TalonFX mRightShooterMotor;
 
-  private SparkPIDController mLeftShooterPID;
-  private SparkPIDController mRightShooterPID;
+  private VelocityVoltage mLeftShooterPID;
+  private VelocityVoltage mRightShooterPID;
+double mLeftShooterEncoder = 0;
+double mRightShooterEncoder = 0;
 
-  private RelativeEncoder mLeftShooterEncoder;
-  private RelativeEncoder mRightShooterEncoder;
-
-  private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(1000);
+    private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(1000);
 
   private Shooter() {
     super("Shooter");
 
     mPeriodicIO = new PeriodicIO();
 
-    mLeftShooterMotor = new CANSparkFlex(Constants.kShooterLeftMotorId, MotorType.kBrushless);
-    mRightShooterMotor = new CANSparkFlex(Constants.kShooterRightMotorId, MotorType.kBrushless);
-    mLeftShooterMotor.restoreFactoryDefaults();
-    mRightShooterMotor.restoreFactoryDefaults();
+    mLeftShooterMotor = new TalonFX(Constants.kShooterLeftMotorId);
+    mRightShooterMotor = new TalonFX(Constants.kShooterRightMotorId);
+    
+    Slot0Configs slot0 = new Slot0Configs();
+    slot0.kP = Constants.kShooterP;
+    slot0.kI = Constants.kShooterI;
+    slot0.kD = Constants.kShooterD;
+    slot0.kV = Constants.kShooterFF;
+    //mLeftShooterPID.setOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput)//TODO Find outputrange equivelent for CTRE
+    mLeftShooterMotor.getConfigurator ().apply(slot0);
+    mRightShooterMotor.getConfigurator ().apply(slot0);
+    
+    mLeftShooterEncoder = mLeftShooterMotor.getVelocity().refresh().getValue();
+    mRightShooterEncoder = mRightShooterMotor.getVelocity().refresh().getValue();
 
-    mLeftShooterPID = mLeftShooterMotor.getPIDController();
-    mLeftShooterPID.setP(Constants.kShooterP);
-    mLeftShooterPID.setI(Constants.kShooterI);
-    mLeftShooterPID.setD(Constants.kShooterD);
-    mLeftShooterPID.setFF(Constants.kShooterFF);
-    mLeftShooterPID.setOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput);
-
-    mRightShooterPID = mRightShooterMotor.getPIDController();
-    mRightShooterPID.setP(Constants.kShooterP);
-    mRightShooterPID.setI(Constants.kShooterI);
-    mRightShooterPID.setD(Constants.kShooterD);
-    mRightShooterPID.setFF(Constants.kShooterFF);
-    mRightShooterPID.setOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput);
-
-    mLeftShooterEncoder = mLeftShooterMotor.getEncoder();
-    mRightShooterEncoder = mRightShooterMotor.getEncoder();
-
-    mLeftShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
-    mRightShooterMotor.setIdleMode(CANSparkFlex.IdleMode.kCoast);
+    mLeftShooterMotor.setNeutralMode(NeutralModeValue.Coast);
+    mRightShooterMotor.setNeutralMode(NeutralModeValue.Coast);
 
     mLeftShooterMotor.setInverted(true);
     mRightShooterMotor.setInverted(false);
@@ -81,8 +72,8 @@ public class Shooter extends Subsystem {
   @Override
   public void writePeriodicOutputs() {
     double limitedSpeed = mSpeedLimiter.calculate(mPeriodicIO.shooter_rpm);
-    mLeftShooterPID.setReference(limitedSpeed, ControlType.kVelocity);
-    mRightShooterPID.setReference(limitedSpeed, ControlType.kVelocity);
+    //mLeftShooterPID.setReference(limitedSpeed, ControlType.kVelocity);//todo revisit
+    //mRightShooterPID.setReference(limitedSpeed, ControlType.kVelocity);//todo revisit
   }
 
   @Override
@@ -93,8 +84,8 @@ public class Shooter extends Subsystem {
   @Override
   public void outputTelemetry() {
     putNumber("Speed (RPM):", mPeriodicIO.shooter_rpm);
-    putNumber("Left speed:", mLeftShooterEncoder.getVelocity());
-    putNumber("Right speed:", mRightShooterEncoder.getVelocity());
+    putNumber("Left speed:", mLeftShooterMotor.getVelocity().refresh().getValue());
+    putNumber("Right speed:", mRightShooterMotor.getVelocity().refresh().getValue());
   }
 
   @Override

@@ -1,8 +1,7 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
-
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -36,20 +35,20 @@ public class Intake extends Subsystem {
     return mInstance;
   }
 
-  private CANSparkMax mIntakeMotor;
-  private CANSparkMax mPivotMotor;
+  private TalonFX mIntakeMotor;
+  private TalonFX mPivotMotor;
 
   private Intake() {
     super("Intake");
 
-    mIntakeMotor = new CANSparkMax(Constants.Intake.kIntakeMotorId, MotorType.kBrushless);
-    mIntakeMotor.restoreFactoryDefaults();
-    mIntakeMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+    mIntakeMotor = new TalonFX(Constants.Intake.kIntakeMotorId);
+   // mIntakeMotor.restoreFactoryDefaults();
+    mIntakeMotor.setNeutralMode(NeutralModeValue.Coast);
 
-    mPivotMotor = new CANSparkMax(Constants.Intake.kPivotMotorId, MotorType.kBrushless);
-    mPivotMotor.restoreFactoryDefaults();
-    mPivotMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
-    mPivotMotor.setSmartCurrentLimit(10);
+    mPivotMotor = new TalonFX(Constants.Intake.kPivotMotorId);
+   // mPivotMotor.restoreFactoryDefaults();
+    mPivotMotor.setNeutralMode(NeutralModeValue.Brake);
+   //mPivotMotor.setSmartCurrentLimit(10);//TODO Find and set current limit for falcon 500
 
     m_periodicIO = new PeriodicIO();
   }
@@ -122,7 +121,7 @@ public class Intake extends Subsystem {
     putNumber("Pivot/Setpoint", pivotTargetToAngle(m_periodicIO.pivot_target));
 
     putNumber("Pivot/Power", m_periodicIO.intake_pivot_voltage);
-    putNumber("Pivot/Current", mPivotMotor.getOutputCurrent());
+    //putNumber("Pivot/Current", mPivotMotor.getOutputCurrent());//TODO May be needed output current for diagnostics
 
     putBoolean("Limit Switch", getIntakeHasNote());
   }
