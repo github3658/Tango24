@@ -45,6 +45,7 @@ double mRightShooterEncoder = 0;
     slot0.kD = Constants.kShooterD;
     slot0.kV = Constants.kShooterFF;
     //mLeftShooterPID.setOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput)//TODO Find outputrange equivelent for CTRE
+    //mLeftShooterPID.configClosedLoopOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput);
     mLeftShooterMotor.getConfigurator ().apply(slot0);
     mRightShooterMotor.getConfigurator ().apply(slot0);
     
@@ -73,6 +74,7 @@ double mRightShooterEncoder = 0;
   public void writePeriodicOutputs() {
     double limitedSpeed = mSpeedLimiter.calculate(mPeriodicIO.shooter_rpm);
     //mLeftShooterPID.setReference(limitedSpeed, ControlType.kVelocity);//todo revisit
+    //mLeftShooterPID.set(ControlMode.Velocity, limitedSpeed);// possible fix for above comment
     //mRightShooterPID.setReference(limitedSpeed, ControlType.kVelocity);//todo revisit
   }
 
