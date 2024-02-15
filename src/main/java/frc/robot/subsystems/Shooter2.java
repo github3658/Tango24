@@ -1,17 +1,28 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.;
-import com.ctre.phoenix6.motorcontrol.can.TalonFX;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.Constants;
+import frc.robot.Helpers;
+import frc.robot.subsystems.leds.LEDs;
 
 public class Shooter extends Subsystem {
+    private static final double s_pivotMotorP = 0.12;
+    private static final double s_pivotMotorI = 0.0;
+    private static final double s_pivotMotorD = 0.001;
 
+    private final PIDController s_pivotPID = new PIDController(s_pivotMotorP, s_pivotMotorI, s_pivotMotorD);
+
+    private final DutyCycleEncoder s_pivotEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
   /*-------------------------------- Private instance variables ---------------------------------*/
   private static Shooter mInstance;
   private PeriodicIO mPeriodicIO;
@@ -25,7 +36,8 @@ public class Shooter extends Subsystem {
 
   private TalonFX mLeftShooterMotor;
   private TalonFX mRightShooterMotor;
-
+  private TalonFX sPivotMotor;
+  private TalonFX sShooterExtensionMotor;
   private VelocityVoltage mLeftShooterPID;
   private VelocityVoltage mRightShooterPID;
 double mLeftShooterEncoder = 0;
@@ -40,6 +52,8 @@ double mRightShooterEncoder = 0;
 
     mLeftShooterMotor = new TalonFX(Constants.kShooterLeftMotorId);
     mRightShooterMotor = new TalonFX(Constants.kShooterRightMotorId);
+    sPivotMotor = new TalonFX(Constants.kPivotMotorId);
+    sShooterExtensionMotor = new TalonFX(Constants.kShooterExtensionMotorId);
     
     Slot0Configs slot0 = new Slot0Configs();
     slot0.kP = Constants.kShooterP;
@@ -56,6 +70,8 @@ double mRightShooterEncoder = 0;
 
     mLeftShooterMotor.setNeutralMode(NeutralModeValue.Coast);
     mRightShooterMotor.setNeutralMode(NeutralModeValue.Coast);
+    sPivotMotor.setNeutralMode(NeutralModeValue.Brake);
+    sShooterExtensionMotor.setNeutralMode(NeutralModeValue.Brake);
 
     mLeftShooterMotor.setInverted(true);
     mRightShooterMotor.setInverted(false);
@@ -107,4 +123,8 @@ double mRightShooterEncoder = 0;
   }
 
   /*---------------------------------- Custom Private Functions ---------------------------------*/
+}
+
+public class Shooter2 {
+    
 }

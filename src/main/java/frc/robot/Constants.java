@@ -89,4 +89,7 @@ public class Constants {
     public static final int k_PWMId = 0;
     public static final int k_totalLength = 300;
   }
+
+public static int kPivotMotorId;
+public static int kShooterExtensionMotorId;
 }
