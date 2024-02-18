@@ -4,7 +4,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.Constants;
 
@@ -23,11 +22,12 @@ public class Shooter extends Subsystem {
 
   private TalonFX mLeftShooterMotor;
   private TalonFX mRightShooterMotor;
-
+  private TalonFX sPivotMotor;
+  private TalonFX sShooterExtensionMotor;
   private VelocityVoltage mLeftShooterPID;
   private VelocityVoltage mRightShooterPID;
-double mLeftShooterEncoder = 0;
-double mRightShooterEncoder = 0;
+  double mLeftShooterEncoder = 0;
+  double mRightShooterEncoder = 0;
 
     private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(1000);
 
@@ -38,14 +38,14 @@ double mRightShooterEncoder = 0;
 
     mLeftShooterMotor = new TalonFX(Constants.kShooterLeftMotorId);
     mRightShooterMotor = new TalonFX(Constants.kShooterRightMotorId);
+    sPivotMotor = new TalonFX(Constants.kPivotMotorId);
+    sShooterExtensionMotor = new TalonFX(Constants.kShooterExtensionMotorId);
     
     Slot0Configs slot0 = new Slot0Configs();
     slot0.kP = Constants.kShooterP;
     slot0.kI = Constants.kShooterI;
     slot0.kD = Constants.kShooterD;
     slot0.kV = Constants.kShooterFF;
-    //mLeftShooterPID.setOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput)//TODO Find outputrange equivelent for CTRE
-    //mLeftShooterPID.configClosedLoopOutputRange(Constants.kShooterMinOutput, Constants.kShooterMaxOutput);//possible fix to above issue
     mLeftShooterMotor.getConfigurator ().apply(slot0);
     mRightShooterMotor.getConfigurator ().apply(slot0);
     
@@ -54,6 +54,8 @@ double mRightShooterEncoder = 0;
 
     mLeftShooterMotor.setNeutralMode(NeutralModeValue.Coast);
     mRightShooterMotor.setNeutralMode(NeutralModeValue.Coast);
+    sPivotMotor.setNeutralMode(NeutralModeValue.Brake);
+    sShooterExtensionMotor.setNeutralMode(NeutralModeValue.Brake);
 
     mLeftShooterMotor.setInverted(true);
     mRightShooterMotor.setInverted(false);
@@ -73,9 +75,9 @@ double mRightShooterEncoder = 0;
   @Override
   public void writePeriodicOutputs() {
     double limitedSpeed = mSpeedLimiter.calculate(mPeriodicIO.shooter_rpm);
-    //mLeftShooterPID.setReference(limitedSpeed, ControlType.kVelocity);//todo revisit
-    //mLeftShooterPID.set(ControlMode.Velocity, limitedSpeed);// possible fix for above comment
-    //mRightShooterPID.setReference(limitedSpeed, ControlType.kVelocity);//todo revisit
+    mLeftShooterMotor.setControl(mLeftShooterPID.withVelocity(limitedSpeed));
+    mRightShooterMotor.setControl(mRightShooterPID.withVelocity(limitedSpeed));
+   
   }
 
   @Override
