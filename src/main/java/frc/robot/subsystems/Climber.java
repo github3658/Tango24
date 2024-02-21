@@ -34,7 +34,9 @@ public class Climber extends Subsystem {
     super("Climber");
 
     mPeriodicIO = new PeriodicIO();
-
+    // <joe> I'd add current limits and ramping:
+    // <joe> setSmartCurrentLimit, setClosedLoopRampRate and setOpenLoopRampRate
+    // <joe> doing this helps to avoid brown outs 
     mLeftClimberMotor = new CANSparkMax(Constants.kClimberLeftMotorId, MotorType.kBrushless);
     mRightClimberMotor = new CANSparkMax(Constants.kClimberRightMotorId, MotorType.kBrushless);
 
