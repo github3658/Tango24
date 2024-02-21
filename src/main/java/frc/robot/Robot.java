@@ -49,6 +49,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    // <jew> looks like your auton command is a placeholder calling a test path
+    // <jew> how are you planning on selecting different autons?
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
