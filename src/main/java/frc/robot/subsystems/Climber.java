@@ -34,10 +34,14 @@ public class Climber extends Subsystem {
     super("Climber");
 
     mPeriodicIO = new PeriodicIO();
-
+    // <joe> I'd add current limits and ramping:
+    // <joe> setSmartCurrentLimit, setClosedLoopRampRate and setOpenLoopRampRate
+    // <joe> doing this helps to avoid brown outs 
     mLeftClimberMotor = new CANSparkMax(Constants.kClimberLeftMotorId, MotorType.kBrushless);
     mRightClimberMotor = new CANSparkMax(Constants.kClimberRightMotorId, MotorType.kBrushless);
 
+    // <joe> Are you comfortable with that the motors are going the correct directions?  If not, I'd do open loop to verify directions to avoid breaking the mechanism.
+    // <joe> Have you tuned these already?  If not, I'd start small and increase values.  May be able to do calculations or use SysId to get reasonable starting values.
     mLeftClimberPID = mLeftClimberMotor.getPIDController();
     mLeftClimberPID.setP(Constants.kClimberP);
     mLeftClimberPID.setI(Constants.kClimberI);
@@ -76,6 +80,8 @@ public class Climber extends Subsystem {
   public void periodic() {
   }
 
+  // <joe> sort of surprised velocity control and not position control
+  // <joe> normally what we do is to set a moving target, so we can be aggressive with the control constants and then we can remain position control when the button is released to help hold us up.
   @Override
   public void writePeriodicOutputs() {
     mLeftClimberPID.setReference(mPeriodicIO.climber_left_speed, ControlType.kVelocity);
@@ -106,6 +112,7 @@ public class Climber extends Subsystem {
     mRightClimberMotor.setIdleMode(CANSparkMax.IdleMode.kBrake);
   }
 
+  // <joe> not sure I'd ever go into coast mode as your robot could drop quickly
   public void setCoastMode() {
     mLeftClimberMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
     mRightClimberMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);

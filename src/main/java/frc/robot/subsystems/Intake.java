@@ -12,6 +12,7 @@ import frc.robot.Constants;
 import frc.robot.Helpers;
 import frc.robot.subsystems.leds.LEDs;
 
+// <joe> sort of surprised closed loop - oh its the pivot ...
 public class Intake extends Subsystem {
   private static final double k_pivotMotorP = 0.12;
   private static final double k_pivotMotorI = 0.0;
@@ -20,6 +21,7 @@ public class Intake extends Subsystem {
   private final PIDController m_pivotPID = new PIDController(k_pivotMotorP, k_pivotMotorI, k_pivotMotorD);
 
   private final DutyCycleEncoder m_pivotEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
+  // <joe> while it is true it is a limit switch, I'd use a different name such as NotePresentSwitch similar with the constant name
   private final DigitalInput m_IntakeLimitSwitch = new DigitalInput(Constants.Intake.k_intakeLimitSwitchId);
 
   public final LEDs m_leds = LEDs.getInstance();
@@ -42,15 +44,20 @@ public class Intake extends Subsystem {
     super("Intake");
 
     mIntakeMotor = new TalonFX(Constants.Intake.kIntakeMotorId);
+    // <joe> it is a good idea to reset to factory defaults
+    // <joe> mIntakeMotor.getConfigurator().apply(new TalonFXConfiguration()); is phoenix 6
    // mIntakeMotor.restoreFactoryDefaults();
     mIntakeMotor.setNeutralMode(NeutralModeValue.Coast);
 
     mPivotMotor = new TalonFX(Constants.Intake.kPivotMotorId);
+   // <joe> it is a good idea to reset to factory defaults
+   // <joe> mPivotMotor.getConfigurator().apply(new TalonFXConfiguration()); is phoenix 6
    // mPivotMotor.restoreFactoryDefaults();
     mPivotMotor.setNeutralMode(NeutralModeValue.Brake);
    //mPivotMotor.setSmartCurrentLimit(10);//TODO Find and set current limit for falcon 500
 
     m_periodicIO = new PeriodicIO();
+    // <joe> I'd do things like zero your encoder here
   }
 
   private static class PeriodicIO {
@@ -89,6 +96,7 @@ public class Intake extends Subsystem {
     double pivot_angle = pivotTargetToAngle(m_periodicIO.pivot_target);
     m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(), pivot_angle);
 
+    // <joe> I would have called isConnected for this instead of assuming this 0.0 is bad
     // If the pivot is at exactly 0.0, it's probably not connected, so disable it
     if (m_pivotEncoder.get() == 0.0) {
       m_periodicIO.intake_pivot_voltage = 0.0;
@@ -130,6 +138,7 @@ public class Intake extends Subsystem {
   public void reset() {
   }
 
+  // <joe> this works fine, but I think a map is a bit more elegant
   public double pivotTargetToAngle(PivotTarget target) {
     switch (target) {
       case GROUND:
@@ -173,6 +182,7 @@ public class Intake extends Subsystem {
     return m_periodicIO.intake_state;
   }
 
+  // <joe> if you reset the encoder, then you don't need to deal with the offset
   public double getPivotAngleDegrees() {
     double value = m_pivotEncoder.getAbsolutePosition() -
         Constants.Intake.k_pivotEncoderOffset + 0.5;
@@ -190,6 +200,7 @@ public class Intake extends Subsystem {
   public void goToGround() {
     m_periodicIO.pivot_target = PivotTarget.GROUND;
     m_periodicIO.intake_state = IntakeState.INTAKE;
+    // <joe> Are leds only used by intake?   If so, this is ok, otherwise you probably need something a bit more complex to avoid collisions (e.g. intake says set to yellow and chassis says to set it to blue)
     m_leds.setColor(Color.kYellow);
   }
 
