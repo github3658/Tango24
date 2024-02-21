@@ -18,6 +18,7 @@ public class Constants {
     public static final int k_intakeLimitSwitchId = 2;
 
     // Absolute encoder offset
+    // <joe> we often make the zero horizontal.  Then your F term (or other constants) can be a function of the cosine of the angle
     public static final double k_pivotEncoderOffset = 0.166842; // Straight up, sketchy to reset to "up"
 
     // Pivot set point angles
@@ -42,6 +43,7 @@ public class Constants {
   public static final int kShooterLeftMotorId = 12;
   public static final int kShooterRightMotorId = 13;
 
+  // <joe> wow these are small values
   public static final double kShooterP = 0.00005;
   public static final double kShooterI = 0.0;
   public static final double kShooterD = 0.0;
@@ -53,6 +55,11 @@ public class Constants {
   // Climber
   public static final int kClimberLeftMotorId = 14;
   public static final int kClimberRightMotorId = 15;
+  // <joe> sort of surprised by velocity on the climber, normally you want the climber to go to a specific position
+  // <joe> we often with these type of mechanisms do position control with the position updating each loop until we 
+  // <joe> hit the final target.  Then if they release the button mid climb we transition to a state that essentially 
+  // <joe> holds the position.   That way the robot doesn't quickly descend.
+  // <joe> The other thing this does is you don't need to scale the motor outputs.
   public static final double kClimberClimbSpeed = 600.0; // RPM
   public static final double kClimberReleaseSpeed = -600.0; // RPM
 
