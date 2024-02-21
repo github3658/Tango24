@@ -12,6 +12,7 @@ import frc.robot.Constants;
 import frc.robot.Helpers;
 import frc.robot.subsystems.leds.LEDs;
 
+// <joe> sort of surprised closed loop - oh its the pivot ...
 public class Intake extends Subsystem {
   private static final double k_pivotMotorP = 0.12;
   private static final double k_pivotMotorI = 0.0;
@@ -89,6 +90,7 @@ public class Intake extends Subsystem {
     double pivot_angle = pivotTargetToAngle(m_periodicIO.pivot_target);
     m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(), pivot_angle);
 
+    // <joe> I would have called isConnected for this instead of assuming this 0.0 is bad
     // If the pivot is at exactly 0.0, it's probably not connected, so disable it
     if (m_pivotEncoder.get() == 0.0) {
       m_periodicIO.intake_pivot_voltage = 0.0;

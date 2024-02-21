@@ -76,6 +76,7 @@ public class Climber extends Subsystem {
   public void periodic() {
   }
 
+  // <joe> sort of surprised velocity control and not position control
   @Override
   public void writePeriodicOutputs() {
     mLeftClimberPID.setReference(mPeriodicIO.climber_left_speed, ControlType.kVelocity);

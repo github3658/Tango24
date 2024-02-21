@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
     if (UseLimelight) {    
       var lastResult = LimelightHelpers.getLatestResults("limelight").targetingResults;
 
+      // <joe> do you want to get wpiBlue for all or check your alliance color
       Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
 
       if (lastResult.valid) {
