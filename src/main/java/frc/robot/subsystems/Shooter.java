@@ -39,6 +39,10 @@ public class Shooter extends Subsystem {
     mPeriodicIO = new PeriodicIO();
 
     // <joe> when you create a new motor it is a good idea reset to factory defaults
+    // <joe> May also want to set current limits/ramping here as well
+    // <joe> See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/CurrentLimits/src/main/java/frc/robot/Robot.java
+    // <joe> for an example of current limits.  Ramping is fairly similar where you set the 
+    // <joe> appropriate ramp period on the OpenLoopRampsConfigs or the ClosedLoopRampsConfigs
     mLeftShooterMotor = new TalonFX(Constants.kShooterLeftMotorId);
     mRightShooterMotor = new TalonFX(Constants.kShooterRightMotorId);
     sPivotMotor = new TalonFX(Constants.kPivotMotorId);
