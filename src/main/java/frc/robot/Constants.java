@@ -15,7 +15,7 @@ public class Constants {
 
     // DIO
     public static final int k_pivotEncoderId = 0;
-    public static final int k_intakeLimitSwitchId = 2;
+    public static final int k_NotePresentSwitchId = 2;
 
     // Absolute encoder offset
     // <joe> we often make the zero horizontal.  Then your F term (or other constants) can be a function of the cosine of the angle

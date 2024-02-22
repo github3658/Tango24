@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import frc.robot.Constants;
@@ -22,12 +23,11 @@ public class Shooter extends Subsystem {
 
   private TalonFX mLeftShooterMotor;
   private TalonFX mRightShooterMotor;
-  private TalonFX sPivotMotor;
+  private TalonFX sShooterPivotMotor;
   private TalonFX sShooterExtensionMotor;
   private VelocityVoltage mLeftShooterPID;
   private VelocityVoltage mRightShooterPID;
   
-   // <joe> name of these variables could be named better as these sound like encoders, but given they are doubles I'm assuming these are readings (probably velocity)
   double mLeftShooterEncoder = 0;
   double mRightShooterEncoder = 0;
 
@@ -38,14 +38,25 @@ public class Shooter extends Subsystem {
 
     mPeriodicIO = new PeriodicIO();
 
+          /* Configure the Talon to use a supply limit of 1 amps IF we exceed 4 amps for over 1 second */
+      TalonFXConfiguration config = new TalonFXConfiguration();
+      config.CurrentLimits.SupplyCurrentLimit = 1; // Limit to 1 amps
+      config.CurrentLimits.SupplyCurrentThreshold = 4; // If we exceed 4 amps
+      config.CurrentLimits.SupplyTimeThreshold = 1.0; // For at least 1 second
+      config.CurrentLimits.SupplyCurrentLimitEnable = true; // And enable it
+      config.CurrentLimits.StatorCurrentLimit = 20; // Limit stator to 20 amps
+      config.CurrentLimits.StatorCurrentLimitEnable = true; // And enable it
+      mLeftShooterMotor.getConfigurator().apply(config);
+      mRightShooterMotor.getConfigurator().apply(config);
+    
     // <joe> when you create a new motor it is a good idea reset to factory defaults
-    // <joe> May also want to set current limits/ramping here as well
+    // <joe> Ramping here as well
     // <joe> See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/CurrentLimits/src/main/java/frc/robot/Robot.java
     // <joe> for an example of current limits.  Ramping is fairly similar where you set the 
     // <joe> appropriate ramp period on the OpenLoopRampsConfigs or the ClosedLoopRampsConfigs
     mLeftShooterMotor = new TalonFX(Constants.kShooterLeftMotorId);
     mRightShooterMotor = new TalonFX(Constants.kShooterRightMotorId);
-    sPivotMotor = new TalonFX(Constants.kPivotMotorId);
+    sShooterPivotMotor = new TalonFX(Constants.kPivotMotorId);
     sShooterExtensionMotor = new TalonFX(Constants.kShooterExtensionMotorId);
     
     Slot0Configs slot0 = new Slot0Configs();
@@ -61,7 +72,7 @@ public class Shooter extends Subsystem {
 
     mLeftShooterMotor.setNeutralMode(NeutralModeValue.Coast);
     mRightShooterMotor.setNeutralMode(NeutralModeValue.Coast);
-    sPivotMotor.setNeutralMode(NeutralModeValue.Brake);
+    sShooterPivotMotor.setNeutralMode(NeutralModeValue.Brake);
     sShooterExtensionMotor.setNeutralMode(NeutralModeValue.Brake);
 
     mLeftShooterMotor.setInverted(true);
