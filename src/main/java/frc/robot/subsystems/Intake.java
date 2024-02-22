@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
@@ -45,13 +46,13 @@ public class Intake extends Subsystem {
 
     mIntakeMotor = new TalonFX(Constants.Intake.kIntakeMotorId);
     // <joe> it is a good idea to reset to factory defaults
-    // <joe> mIntakeMotor.getConfigurator().apply(new TalonFXConfiguration()); is phoenix 6
+    mIntakeMotor.getConfigurator().apply(new TalonFXConfiguration()); 
    // mIntakeMotor.restoreFactoryDefaults();
     mIntakeMotor.setNeutralMode(NeutralModeValue.Coast);
 
     mPivotMotor = new TalonFX(Constants.Intake.kPivotMotorId);
    // <joe> it is a good idea to reset to factory defaults
-   // <joe> mPivotMotor.getConfigurator().apply(new TalonFXConfiguration()); is phoenix 6
+    mPivotMotor.getConfigurator().apply(new TalonFXConfiguration());
    // mPivotMotor.restoreFactoryDefaults();
     mPivotMotor.setNeutralMode(NeutralModeValue.Brake);
    //mPivotMotor.setSmartCurrentLimit(10);//TODO Find and set current limit for falcon 500
