@@ -16,7 +16,8 @@ import frc.robot.generated.TunerConstants;
 public class RobotContainer {
   private double MaxSpeed = TunerConstants.kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
   // <<joe>> you said it rotated pretty slow, this would be what is controlling it
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  private double MaxAngularRate = 2.0 * Math.PI; //TODO This is where you speed up the turn of the swerve
+                                                 //3/4 of a rotation per second max angular velocity
 
   /* Setting up bindings for necessary control of the swerve drive platform */
   private final CommandXboxController joystick = new CommandXboxController(0); // My joystick
