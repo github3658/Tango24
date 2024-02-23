@@ -49,7 +49,7 @@ public class Intake extends Subsystem {
     IntakeTilt = new TalonFX(Constants.Intake.kIntakeTiltId);
     IntakeTilt.getConfigurator().apply(new TalonFXConfiguration());
     IntakeTilt.setNeutralMode(NeutralModeValue.Brake);
-   //IntakeTilt.setSmartCurrentLimit(10);//TODO Find and set current limit for falcon 500
+    //IntakeTilt.setSmartCurrentLimit(10);//TODO Find and set current limit for falcon 500
 
     m_periodicIO = new PeriodicIO();
     m_pivotEncoder.reset();
