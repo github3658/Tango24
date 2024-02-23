@@ -50,7 +50,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     private final SwerveRequest.SysIdSwerveSteerGains SteerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
 
     /* Use one of these sysidroutines for your particular test */
-    private SysIdRoutine SysIdRoutineTranslation = new SysIdRoutine(
+        private SysIdRoutine SysIdRoutineTranslation = new SysIdRoutine(
             new SysIdRoutine.Config(
                     null,
                     Volts.of(4),
