@@ -21,15 +21,15 @@ public class Shooter extends Subsystem {
     return mInstance;
   }
 
-  private TalonFX mLeftShooterMotor;
-  private TalonFX mRightShooterMotor;
-  private TalonFX sShooterPivotMotor;
-  private TalonFX sShooterExtensionMotor;
-  private VelocityVoltage mLeftShooterPID;
-  private VelocityVoltage mRightShooterPID;
+  private TalonFX ShooterLeft;
+  private TalonFX ShooterRight;
+  private TalonFX ShooterPivot;
+  private TalonFX ShooterExtend;
+  private VelocityVoltage LeftShooterPID;
+  private VelocityVoltage RightShooterPID;
   
-  double mLeftShooterEncoder = 0;
-  double mRightShooterEncoder = 0;
+  double LeftShooterEncoder = 0;
+  double RightShooterEncoder = 0;
 
     private SlewRateLimiter mSpeedLimiter = new SlewRateLimiter(1000);
 
@@ -46,37 +46,37 @@ public class Shooter extends Subsystem {
       config.CurrentLimits.SupplyCurrentLimitEnable = true; // And enable it
       config.CurrentLimits.StatorCurrentLimit = 20; // Limit stator to 20 amps
       config.CurrentLimits.StatorCurrentLimitEnable = true; // And enable it
-      mLeftShooterMotor.getConfigurator().apply(config);
-      mRightShooterMotor.getConfigurator().apply(config);
+      ShooterLeft.getConfigurator().apply(config);
+      ShooterRight.getConfigurator().apply(config);
     
     // <joe> when you create a new motor it is a good idea reset to factory defaults
     // <joe> Ramping here as well
     // <joe> See https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/CurrentLimits/src/main/java/frc/robot/Robot.java
     // <joe> for an example of current limits.  Ramping is fairly similar where you set the 
     // <joe> appropriate ramp period on the OpenLoopRampsConfigs or the ClosedLoopRampsConfigs
-    mLeftShooterMotor = new TalonFX(Constants.kShooterLeftMotorId);
-    mRightShooterMotor = new TalonFX(Constants.kShooterRightMotorId);
-    sShooterPivotMotor = new TalonFX(Constants.kPivotMotorId);
-    sShooterExtensionMotor = new TalonFX(Constants.kShooterExtensionMotorId);
+    ShooterLeft = new TalonFX(Constants.kShooterLeftMotorId);
+    ShooterRight = new TalonFX(Constants.kShooterRightMotorId);
+    ShooterPivot = new TalonFX(Constants.kIntakeTiltId);
+    ShooterExtend = new TalonFX(Constants.kShooterExtensionMotorId);
     
     Slot0Configs slot0 = new Slot0Configs();
     slot0.kP = Constants.kShooterP;
     slot0.kI = Constants.kShooterI;
     slot0.kD = Constants.kShooterD;
     slot0.kV = Constants.kShooterFF;
-    mLeftShooterMotor.getConfigurator ().apply(slot0);
-    mRightShooterMotor.getConfigurator ().apply(slot0);
+    ShooterLeft.getConfigurator ().apply(slot0);
+    ShooterRight.getConfigurator ().apply(slot0);
 
-    mLeftShooterEncoder = mLeftShooterMotor.getVelocity().refresh().getValue();
-    mRightShooterEncoder = mRightShooterMotor.getVelocity().refresh().getValue();
+    LeftShooterEncoder = ShooterLeft.getVelocity().refresh().getValue();
+    RightShooterEncoder = ShooterRight.getVelocity().refresh().getValue();
 
-    mLeftShooterMotor.setNeutralMode(NeutralModeValue.Coast);
-    mRightShooterMotor.setNeutralMode(NeutralModeValue.Coast);
-    sShooterPivotMotor.setNeutralMode(NeutralModeValue.Brake);
-    sShooterExtensionMotor.setNeutralMode(NeutralModeValue.Brake);
+    ShooterLeft.setNeutralMode(NeutralModeValue.Coast);
+    ShooterRight.setNeutralMode(NeutralModeValue.Coast);
+    ShooterPivot.setNeutralMode(NeutralModeValue.Brake);
+    ShooterExtend.setNeutralMode(NeutralModeValue.Brake);
 
-    mLeftShooterMotor.setInverted(true);
-    mRightShooterMotor.setInverted(false);
+    ShooterLeft.setInverted(true);
+    ShooterRight.setInverted(false);
 
   }
 
@@ -93,8 +93,8 @@ public class Shooter extends Subsystem {
   @Override
   public void writePeriodicOutputs() {
     double limitedSpeed = mSpeedLimiter.calculate(mPeriodicIO.shooter_rpm);
-    mLeftShooterMotor.setControl(mLeftShooterPID.withVelocity(limitedSpeed));
-    mRightShooterMotor.setControl(mRightShooterPID.withVelocity(limitedSpeed));
+    ShooterLeft.setControl(LeftShooterPID.withVelocity(limitedSpeed));
+    ShooterRight.setControl(RightShooterPID.withVelocity(limitedSpeed));
    
   }
 
@@ -106,8 +106,8 @@ public class Shooter extends Subsystem {
   @Override
   public void outputTelemetry() {
     putNumber("Speed (RPM):", mPeriodicIO.shooter_rpm);
-    putNumber("Left speed:", mLeftShooterMotor.getVelocity().refresh().getValue());
-    putNumber("Right speed:", mRightShooterMotor.getVelocity().refresh().getValue());
+    putNumber("Left speed:", ShooterLeft.getVelocity().refresh().getValue());
+    putNumber("Right speed:", ShooterRight.getVelocity().refresh().getValue());
   }
 
   @Override

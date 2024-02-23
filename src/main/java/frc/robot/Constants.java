@@ -11,7 +11,7 @@ public class Constants {
   public static class Intake {
     // Motors
     public static final int kIntakeMotorId = 9;
-    public static final int kPivotMotorId = 10;
+    public static final int kIntakeTiltId = 10;
 
     // DIO
     public static final int k_pivotEncoderId = 0;
@@ -97,6 +97,6 @@ public class Constants {
     public static final int k_totalLength = 300;
   }
 
-public static int kPivotMotorId;
+public static int kIntakeTiltId;
 public static int kShooterExtensionMotorId;
 }

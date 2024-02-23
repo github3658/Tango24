@@ -14,11 +14,11 @@ import frc.robot.Helpers;
 import frc.robot.subsystems.leds.LEDs;
 
 public class Intake extends Subsystem {
-  private static final double k_pivotMotorP = 0.12;
-  private static final double k_pivotMotorI = 0.0;
-  private static final double k_pivotMotorD = 0.001;
+  private static final double k_IntakeTiltP = 0.12;
+  private static final double k_IntakeTiltI = 0.0;
+  private static final double k_IntakeTiltD = 0.001;
 
-  private final PIDController m_pivotPID = new PIDController(k_pivotMotorP, k_pivotMotorI, k_pivotMotorD);
+  private final PIDController m_pivotPID = new PIDController(k_IntakeTiltP, k_IntakeTiltI, k_IntakeTiltD);
 
   private final DutyCycleEncoder m_pivotEncoder = new DutyCycleEncoder(Constants.Intake.k_pivotEncoderId);
   private final DigitalInput m_NotePresentSwitch = new DigitalInput(Constants.Intake.k_NotePresentSwitchId);
@@ -36,20 +36,20 @@ public class Intake extends Subsystem {
     return mInstance;
   }
 
-  private TalonFX mIntakeMotor;
-  private TalonFX mPivotMotor;
+  private TalonFX IntakeNote;
+  private TalonFX IntakeTilt;
 
   private Intake() {
     super("Intake");
 
-    mIntakeMotor = new TalonFX(Constants.Intake.kIntakeMotorId);
-    mIntakeMotor.getConfigurator().apply(new TalonFXConfiguration()); 
-    mIntakeMotor.setNeutralMode(NeutralModeValue.Coast);
+    IntakeNote = new TalonFX(Constants.Intake.kIntakeMotorId);
+    IntakeNote.getConfigurator().apply(new TalonFXConfiguration()); 
+    IntakeNote.setNeutralMode(NeutralModeValue.Coast);
 
-    mPivotMotor = new TalonFX(Constants.Intake.kPivotMotorId);
-    mPivotMotor.getConfigurator().apply(new TalonFXConfiguration());
-    mPivotMotor.setNeutralMode(NeutralModeValue.Brake);
-   //mPivotMotor.setSmartCurrentLimit(10);//TODO Find and set current limit for falcon 500
+    IntakeTilt = new TalonFX(Constants.Intake.kIntakeTiltId);
+    IntakeTilt.getConfigurator().apply(new TalonFXConfiguration());
+    IntakeTilt.setNeutralMode(NeutralModeValue.Brake);
+   //IntakeTilt.setSmartCurrentLimit(10);//TODO Find and set current limit for falcon 500
 
     m_periodicIO = new PeriodicIO();
     m_pivotEncoder.reset();
@@ -104,9 +104,9 @@ public class Intake extends Subsystem {
 
   @Override
   public void writePeriodicOutputs() {
-    mPivotMotor.setVoltage(m_periodicIO.intake_pivot_voltage);
+    IntakeTilt.setVoltage(m_periodicIO.intake_pivot_voltage);
 
-    mIntakeMotor.set(m_periodicIO.intake_speed);
+    IntakeNote.set(m_periodicIO.intake_speed);
   }
 
   @Override
@@ -123,7 +123,7 @@ public class Intake extends Subsystem {
     putNumber("Pivot/Abs Enc (getPivotAngleDegrees)", getPivotAngleDegrees());
     putNumber("Pivot/Setpoint", pivotTargetToAngle(m_periodicIO.pivot_target));
     putNumber("Pivot/Power", m_periodicIO.intake_pivot_voltage);
-    putNumber("Pivot/Current", mPivotMotor.getTorqueCurrent().getValueAsDouble());
+    putNumber("Pivot/Current", IntakeTilt.getTorqueCurrent().getValueAsDouble());
     putBoolean("Limit Switch", getIntakeHasNote());
   }
 
