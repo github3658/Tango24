@@ -91,8 +91,6 @@ public class Intake extends Subsystem {
     double pivot_angle = pivotTargetToAngle(m_periodicIO.pivot_target);
     m_periodicIO.intake_pivot_voltage = m_pivotPID.calculate(getPivotAngleDegrees(), pivot_angle);
 
-    // <joe> I would have called isConnected for this instead of assuming this 0.0 is bad
-    // If the pivot is at exactly 0.0, it's probably not connected, so disable it
     if (!m_pivotEncoder.isConnected()) {
       m_periodicIO.intake_pivot_voltage = 0.0;
     }
